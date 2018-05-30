@@ -1,0 +1,1 @@
+this is a python program i made using only in built python function to run a Conway's game of life simulation.
