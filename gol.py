@@ -206,6 +206,8 @@ print()
 for i in range(iterations):
     printarray(grid)
     scanlist()
+    #enter custom function here
     scan()
+    #leav this alone this will copy the array onto the main grid
     cparray()
-    sleep(0.1)
+    sleep(sleepTime)
