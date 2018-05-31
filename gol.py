@@ -193,6 +193,17 @@ def printarray(array):
     print()
     print()
 
+def fprintarray(array):
+    for i in range(len(array)-1):
+        for j in range(len(array[i])-1):
+            if array[i] [j] == 1:
+                sys.stdout.write('█')
+            else:
+                sys.stdout.write(' ')
+        sys.stdout.write('!')
+    print()
+    print()
+
 def cparray():
     for i in range(len(temp)-1):
         for j in range(len(temp[i])-1):
@@ -205,6 +216,7 @@ print()
 
 for i in range(iterations):
     printarray(grid)
+    fprintarray(grid)
     scanlist()
     #enter custom function here
     scan()
