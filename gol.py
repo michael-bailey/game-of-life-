@@ -207,7 +207,7 @@ def printarray(array):
     for i in range(len(array)-1):
         for j in range(len(array[i])-1):
             sys.stdout.write(str(array[i] [j]))
-        sys.stdout.write('!')
+        sys.stdout.write('\n')
     print()
     print()
 
@@ -218,7 +218,7 @@ def fprintarray(array):
                 sys.stdout.write('█')
             else:
                 sys.stdout.write(' ')
-        sys.stdout.write('!')
+        sys.stdout.write('\n')
     print()
     print()
 
@@ -240,6 +240,6 @@ for i in range(generations):
     scanlist()
     #enter custom function here
     scan()
-    #leav this alone this will copy the array onto the main grid
+    #leave this alone this will copy the array onto the main grid
     cparray()
     sleep(sleepTime)
