@@ -236,6 +236,7 @@ for i in range(generations):
     print("generation : ",i)
     print()
     printarray(grid)
+    print("generation : ",i)
     fprintarray(grid)
     scanlist()
     #enter custom function here
