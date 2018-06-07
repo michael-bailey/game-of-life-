@@ -150,14 +150,12 @@ def scan():
     for i in range(len(grid)-1):
         for j in range(len(grid[0])-1):
             testcase = (((grid [i+1] [j-1]) + (grid [i+1] [j]) + (grid [i+1] [j+1])) + ((grid [i] [j-1]) + (grid [i] [j+1])) + (grid [i-1] [j-1]) + (grid [i-1] [j]) + (grid [i-1] [j+1]))
-            if testcase < 2:
-                temp[i] [j] = 0
-            elif testcase > 3:
-                temp[i] [j] = 0
-            elif testcase == 3:
+            if testcase == 3 or testcase == 6:
                 temp[i] [j] = 1
-            else:
+            elif testcase == 2 or testcase == 3:
                 temp[i] [j] = grid[i] [j]
+            else:
+                temp[i] [j] = 0
     return temp
 
 
