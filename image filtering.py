@@ -5,9 +5,10 @@ from PIL import Image
 
 ksize = 100
 
-img = cv2.imread('Apple-iMac-and-MacBook-Retina-Display-Wallpaper-5K-Apple-Logo-Design-5120x2880.jpg')
+img = cv2.imread('in.png')
 
-kernel = np.asarray([
+kernel = np.ones((ksize,ksize),np.float32)/np.sum(np.ones((ksize,ksize),np.float32))
+"""np.asarray([
     [1,2,3,2,1],
     [2,3,4,3,2],
     [3,4,5,4,3],
@@ -20,10 +21,11 @@ kernel = np.asarray([
     [2,3,4,3,2],
     [1,2,3,2,1]
 ])
+"""
 print(kernel)
 dst = cv2.filter2D(img,-1,kernel)
 
-for i in range(1000):
+for i in range(1):
     dst = cv2.filter2D(img,-1,kernel)
 
 plt.subplot(121),plt.imshow(img),plt.title('Original')
