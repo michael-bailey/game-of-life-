@@ -3,11 +3,11 @@ import numpy as np
 from matplotlib import pyplot as plt
 from PIL import Image
 
-ksize = 100
+ksize = 250
 
 img = cv2.imread('in.png')
 
-kernel = np.ones((ksize,ksize),np.float32)/np.sum(np.ones((ksize,ksize),np.float32))
+kernel = np.ones((ksize,ksize))/np.sum(np.ones((ksize,ksize),np.float32))
 """np.asarray([
     [1,2,3,2,1],
     [2,3,4,3,2],
