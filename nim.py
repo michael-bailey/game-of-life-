@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 def Menu():
     print("enter an option :")
     print("1. play against computer")

@@ -3,7 +3,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 from PIL import Image
 
-ksize = 250
+ksize = 100
 
 img = cv2.imread('in.png')
 
