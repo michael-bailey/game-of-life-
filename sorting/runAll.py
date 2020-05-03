@@ -13,7 +13,7 @@ if __name__ == "__main__":
         csvWriter = writer(file, delimiter=',',quotechar='|', quoting=QUOTE_MINIMAL)
 
         with ProcessPoolExecutor() as executor:
-            selectionFuture = executor.submit(time, sortSelection, fileName="selection.csv", arrayLength=arraylength, iterations=1)
+            selectionFuture = executor.submit(time, sortSelection, fileName="selection.csv", arrayLength=arraylength, iterations=1, recursionlimit=arraylength)
             mergeFuture = executor.submit(time, sortMerge, fileName="merge.csv", arrayLength=arraylength, iterations=1)
             mergeThreadFuture = executor.submit(time, sortMergeThread, fileName="mergeThreaded.csv", arrayLength=arraylength, iterations=1)
 
