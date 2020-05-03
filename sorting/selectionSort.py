@@ -1,6 +1,6 @@
 import codeTimer
 
-def sort_one(array):
+def sortSelection(array):
 
     if len(array) < 1:
         return []
@@ -14,7 +14,5 @@ def sort_one(array):
             smallestNumber = array[i]
     array[smallestIndex], array[0] = array[0], array[smallestIndex]
     newValue = array[0:1]
-    solved = newValue + sort_one(array[1:])
+    solved = newValue + sortSelection(array[1:])
     return solved
-
-codeTimer.time(sort_one, fileName="merge.csv", arrayLength=10, iterations=1)

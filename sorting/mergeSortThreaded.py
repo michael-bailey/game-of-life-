@@ -1,13 +1,20 @@
 import codeTimer
+from concurrent.futures import ThreadPoolExecutor
 
-def sortMerge(array):
+def sortMergeThread(array, theadDepth=2):
     length = len(array)
 
     if length <= 1:
         return array
 
-    leftHalf = sortMerge(array[0:length//2])
-    rightHalf = sortMerge(array[length//2:])
+    if theadDepth < 1:
+        leftHalf = sortMergeThread(array[0:length//2])
+        rightHalf = sortMergeThread(array[length//2:])
+    else:
+        with ThreadPoolExecutor() as executor:
+            future = executor.submit(sortMergeThread, array[0:length//2], theadDepth-1)
+            rightHalf = sortMergeThread(array[length//2:])
+            leftHalf = future.result()
 
     # print('compare:  ', leftHalf, " | ", rightHalf)
 
