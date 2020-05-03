@@ -5,13 +5,13 @@ def time(function, fileName="changeme.csv", arrayLength=100, iterations=1, recur
 
     import sys
 
-    sys.setrecursionlimit(recursionlimit)
+    sys.setrecursionlimit(recursionlimit+100)
 
     attemptlist = ["attempt"]
     testTimes = []
 
     for i in range(arrayLength):
-        # print(i)
+        print(i)
         randList = genRandomList(i)
         # print(randList)
         attemptlist.append(i)

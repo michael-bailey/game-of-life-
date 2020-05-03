@@ -8,7 +8,7 @@ from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
 
 
 if __name__ == "__main__":
-    arraylength = 5000
+    arraylength = 1000
     with open('sortingData.csv', 'w') as file:
         csvWriter = writer(file, delimiter=',',quotechar='|', quoting=QUOTE_MINIMAL)
 
