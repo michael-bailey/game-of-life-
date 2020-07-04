@@ -1,7 +1,7 @@
 from timeit import timeit
 from randomListGen import genRandomList
 
-def time(function, fileName="changeme.csv", arrayLength=100, iterations=1, recursionlimit=1000):
+def time(function, fileName="changeme.csv", arrayLength=100, iterations=1, recursionlimit=1000, data=None):
 
     import sys
 
@@ -10,12 +10,16 @@ def time(function, fileName="changeme.csv", arrayLength=100, iterations=1, recur
     attemptlist = ["attempt"]
     testTimes = []
 
-    for i in range(arrayLength):
-        print(i)
-        randList = genRandomList(i)
-        # print(randList)
-        attemptlist.append(i)
-        testTimes.append(timeit(lambda: function(randList), number=iterations))
-        print(testTimes[-1])
+    if data == None:
+        for i in range(arrayLength):
+            print(i)
+            randList = genRandomList(i)
+            # print(randList)
+            attemptlist.append(i)
+            testTimes.append(timeit(lambda: function(randList), number=iterations))
+            print(testTimes[-1])
+    else:
+        attemptlist.append(1)
+        testTimes.append(timeit(lambda: function(data), number=iterations))
     
     return testTimes
