@@ -9,8 +9,6 @@ def sortMerge(array):
     leftHalf = sortMerge(array[0:length//2])
     rightHalf = sortMerge(array[length//2:])
 
-    # print('compare:  ', leftHalf, " | ", rightHalf)
-
     newlist = []
     while len(leftHalf) > 0 and len(rightHalf) > 0:
         if leftHalf[0] < rightHalf[0]:
@@ -24,5 +22,4 @@ def sortMerge(array):
     for i in rightHalf:
         newlist.append(i)
 
-    # print("result: ", newlist)
     return newlist
