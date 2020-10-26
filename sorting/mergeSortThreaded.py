@@ -16,8 +16,6 @@ def sortMergeThread(array, theadDepth=2):
             rightHalf = sortMergeThread(array[length//2:])
             leftHalf = future.result()
 
-    # print('compare:  ', leftHalf, " | ", rightHalf)
-
     newlist = []
     while len(leftHalf) > 0 and len(rightHalf) > 0:
         if leftHalf[0] < rightHalf[0]:
@@ -31,5 +29,4 @@ def sortMergeThread(array, theadDepth=2):
     for i in rightHalf:
         newlist.append(i)
 
-    # print("result: ", newlist)
     return newlist
