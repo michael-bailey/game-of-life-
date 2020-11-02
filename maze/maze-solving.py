@@ -4,10 +4,9 @@ import numpy as np
 from classes.Maze import Maze
 
 if __name__ == "__main__":
-    maze = Maze("./maze.png", output_image=True)
+    #maze = Maze("./maze.png", output_image=True)
+
+    maze = Maze("./perfect2k.png", output_image=True, verbose=True)
+    #maze = Maze("./perfect15k.png")
     maze.solve_dikstra()
-
-    #twoThousand = Maze("./perfect2k.png", output_image=True, verbose=True)
-    #fithteenThoushand = Maze("./perfect15k.png", output_image=True)
-
     print("done")
