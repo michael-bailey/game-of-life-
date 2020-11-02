@@ -182,16 +182,16 @@ class Maze(object):
                     if self.verbose: print("diff: ", diff)
                     if node.distance == None or node.distance > current.distance + diff:
                         node.distance = current.distance + diff
+                        node.previous = current
                         queue.put(node)
 
                 doneList.append(current)
 
                     
             print(" ---| route |---")
-            for i in doneList:
+            for i in self.endNode.pathFind():
                 if i is self.startNode: print("start: ", i)
                 elif i is self.endNode: print("end: ", i)
                 else: print("node: ", i)
-                if i is self.endNode:
-                    break
+
 

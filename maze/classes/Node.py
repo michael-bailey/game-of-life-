@@ -13,11 +13,17 @@ class Node:
         self.pos_x = pos_x
         self.pos_y = pos_y
 
+        self.previous = None
+
         self.nodes = []
         Node.nodes.append(self)
 
     def addNode(self, node):
         self.nodes.append(node)
+
+    def pathFind(self):
+        if self.previous == None: return [self]
+        return self.previous.pathFind() + [self]
 
     def __str__(self):
         return "node uuid: {} x: {} y:{} distance:{}".format(self.id, self.pos_x, self.pos_y, self.distance)
