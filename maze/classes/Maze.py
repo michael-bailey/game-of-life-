@@ -15,13 +15,20 @@ class Maze(object):
         self.verbose = verbose
 
         # open the image file
-        self.image = openImage(filename)
+        image = openImage(filename)
+        self.width = image.width
+        self.height = image.height
 
         # turn image file into an array
-        self.mazeArray = np.asarray(self.image)
+        self.mazeArray = np.asarray(image)
+
+        # free memory
+        del image
 
         # create empty node array for the nodes
-        self.nodeMap = [[None for _ in range(self.image.width)] for _ in range(self.image.height)]
+        self.nodeMap = [[None for _ in range(self.width)] for _ in range(self.height)]
+
+        
 
         # verbose option
         if verbose: print(self.nodeMap)
@@ -63,7 +70,7 @@ class Maze(object):
 
             fromarray(nodeImageArray).save("./nodes.png")
 
-        if output_image: self.pathsImage = np.full((self.image.width, self.image.height), False, dtype=bool)
+        if output_image: self.pathsImage = np.full((self.width, self.height), False, dtype=bool)
 
         # scan over all rows and create left to right connections
         if verbose: print(" ---| linking rows |---")
