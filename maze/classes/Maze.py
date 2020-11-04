@@ -61,7 +61,7 @@ class Maze(object):
 
         # if the output image is set then generate node image for the graph
         if output_image:
-            nodeImageArray = np.full((self.image.width, self.image.height), False, dtype=bool)
+            nodeImageArray = np.full((self.width, self.height), False, dtype=bool)
 
             for y in range(len(self.nodeMap)):
                 for x in range(len(self.nodeMap[y])):
