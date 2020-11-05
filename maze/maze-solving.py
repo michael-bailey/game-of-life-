@@ -9,7 +9,7 @@ sys.setrecursionlimit(100000)
 if __name__ == "__main__":
     maze = Maze("./maze.png", output_image=True)
 
-    #maze = Maze("./perfect2k.png", output_image=True)
+    maze = Maze("./perfect2k.png", output_image=True)
     #maze = Maze("./perfect15k.png")
 
     maze.solve_dikstra()
