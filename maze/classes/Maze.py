@@ -1,3 +1,4 @@
+from sys import path
 from numpy.core.records import array
 from .Node import Node
 from PIL.Image import Image, open as openImage, fromarray
@@ -15,20 +16,16 @@ class Maze(object):
         self.verbose = verbose
 
         # open the image file
-        image = openImage(filename)
-        self.width = image.width
-        self.height = image.height
+        self.image = openImage(filename)
+
+        self.width = self.image.width
+        self.height = self.image.height
 
         # turn image file into an array
-        self.mazeArray = np.asarray(image)
-
-        # free memory
-        del image
+        self.mazeArray = np.asarray(self.image)
 
         # create empty node array for the nodes
         self.nodeMap = [[None for _ in range(self.width)] for _ in range(self.height)]
-
-        
 
         # verbose option
         if verbose: print(self.nodeMap)
@@ -68,7 +65,7 @@ class Maze(object):
                     if self.nodeMap[y][x] != None:
                         nodeImageArray[y][x] = True
 
-            fromarray(nodeImageArray).save("./nodes.png")
+            fromarray(nodeImageArray).save("./nodeMap.png")
 
         if output_image: self.pathsImage = np.full((self.width, self.height), False, dtype=bool)
 
@@ -137,7 +134,7 @@ class Maze(object):
 
 
         if output_image:
-            fromarray(self.pathsImage).save("paths.png")
+            fromarray(self.pathsImage).save("PathMap.png")
 
 
 
@@ -165,7 +162,7 @@ class Maze(object):
         return False
 
     def solve_dikstra(self):
-            print(" ---| initalising |--- ")
+            if self.verbose: print(" ---| initalising |--- ")
             queue = PriorityQueue()
             doneList = []
             distance = 0
@@ -196,9 +193,36 @@ class Maze(object):
 
                     
             print(" ---| route |---")
-            for i in self.endNode.pathFind():
+            img = self.image.convert("RGB")
+            solutionArray = img.load()
+
+            pathArray = self.endNode.pathFind()
+
+            for i in pathArray:
                 if i is self.startNode: print("start: ", i)
                 elif i is self.endNode: print("end: ", i)
                 else: print("node: ", i)
 
+            for i in range(len(pathArray)-1):
+                px = (200, 0, 0)
+
+                a = pathArray[i]
+                b = pathArray[i+1]
+
+                # Blue - red
+                r = int((i / len(pathArray)) * 255)
+                px = (r, 255 - r, 255 - r)
+
+                if a.pos_y == b.pos_y:
+                    # Ys equal - horizontal line
+                    for x in range(min(a.pos_x,b.pos_x), max(a.pos_x,b.pos_x)):
+                        solutionArray[x,a.pos_y] = px
+                elif a.pos_x == b.pos_x:
+                    # Xs equal - vertical line
+                    for y in range(min(a.pos_y,b.pos_y), max(a.pos_y,b.pos_y) + 1):
+                        solutionArray[a.pos_x,y] = px
+
+
+
+            img.save("solution.png")
 
