@@ -6,63 +6,66 @@ import PIL
 import numpy as np
 from pprint import pprint
 from queue import PriorityQueue
+import gc
 
 PIL.Image.MAX_IMAGE_PIXELS = 933120000
 
 class Maze(object):
     
     def __init__(self, filename, output_image=False, verbose=False, threads=1):
-
         self.verbose = verbose
+        print("[ info ]")
+        
 
         # open the image file
         self.image = openImage(filename)
-
         self.width = self.image.width
         self.height = self.image.height
+
+        print("width:\t", self.width)
+        print("height:\t", self.height)
 
         # turn image file into an array
         self.mazeArray = np.asarray(self.image)
 
         # create empty node array for the nodes
-        self.nodeMap = [[None for _ in range(self.width)] for _ in range(self.height)]
-
-        # verbose option
-        if verbose: print(self.nodeMap)
+        nodeMap = [[None for _ in range(self.width)] for _ in range(self.height)]
 
         # TODO: - thread this part
         # create start node and fetch id
         for i in range(len(self.mazeArray[0])):
             if self.mazeArray[0][i] == True:
                 self.startNode = Node(i, 0)
-                self.nodeMap[0][i] = self.startNode
+                nodeMap[0][i] = self.startNode
                 break
         
-        # TODO: - thread this part
         # create end node and get id
         for i in range(len(self.mazeArray[len(self.mazeArray)-1])):
             if  self.mazeArray[len(self.mazeArray)-1][i] == True:
                 self.endNode = Node(i, len(self.mazeArray)-1)
-                self.nodeMap[len(self.mazeArray)-1][i] = self.endNode
+                nodeMap[len(self.mazeArray)-1][i] = self.endNode
                 break
 
         # TODO: - thread this part
         # generate nodes for each corner or juntion for the maze
         for y in range(1, len(self.mazeArray)-1):
+
+        # define a function for a row to be processed
+        def generateNodes(y):
             for x in range(1, len(self.mazeArray[0])-1):
                 if verbose: print("---| x:{} y:{} |---".format(x, y))
                 createNode = self.isNode(x, y)
                 if verbose: print("is node? ", createNode)
                 if createNode:
-                    self.nodeMap[y][x] = Node(x, y)
+                    nodeMap[y][x] = Node(x, y)
 
         # if the output image is set then generate node image for the graph
         if output_image:
             nodeImageArray = np.full((self.width, self.height), False, dtype=bool)
 
-            for y in range(len(self.nodeMap)):
-                for x in range(len(self.nodeMap[y])):
-                    if self.nodeMap[y][x] != None:
+            for y in range(len(nodeMap)):
+                for x in range(len(nodeMap[y])):
+                    if nodeMap[y][x] != None:
                         nodeImageArray[y][x] = True
 
             fromarray(nodeImageArray).save("./nodeMap.png")
@@ -82,22 +85,22 @@ class Maze(object):
                     continue
 
                 # if none skip this node
-                if verbose: print("node: ", self.nodeMap[y][x])
-                if self.nodeMap[y][x] == None:
+                if verbose: print("node: ", nodeMap[y][x])
+                if nodeMap[y][x] == None:
                     if output_image: self.pathsImage[y][x] = True
                     continue
 
                 if verbose: print("current node: ", currentNode)
                 if currentNode == None:
-                    currentNode = self.nodeMap[y][x]
+                    currentNode = nodeMap[y][x]
                     if output_image: self.pathsImage[y][x] = True
                     continue
 
-                if verbose: print("created link: ", currentNode, " => ", self.nodeMap[y][x])
+                if verbose: print("created link: ", currentNode, " => ", nodeMap[y][x])
                 if currentNode != None:
-                    currentNode.addNode(self.nodeMap[y][x])
-                    self.nodeMap[y][x].addNode(currentNode)
-                    currentNode = self.nodeMap[y][x]
+                    currentNode.addNode(nodeMap[y][x])
+                    nodeMap[y][x].addNode(currentNode)
+                    currentNode = nodeMap[y][x]
                     if output_image: self.pathsImage[y][x] = True
 
         # scan all columns and create all top to bottom connections
@@ -113,28 +116,31 @@ class Maze(object):
                     continue
 
                 # if none skip this node
-                if verbose: print("node: ", self.nodeMap[y][x])
-                if self.nodeMap[y][x] == None:
+                if verbose: print("node: ", nodeMap[y][x])
+                if nodeMap[y][x] == None:
                     if output_image: self.pathsImage[y][x] = True
                     continue
 
                 if verbose: print("current node: ", currentNode)
                 if currentNode == None:
-                    currentNode = self.nodeMap[y][x]
+                    currentNode = nodeMap[y][x]
                     if output_image: self.pathsImage[y][x] = True
                     continue
 
-                if verbose: print("created link: ", currentNode, " => ", self.nodeMap[y][x])
-                self.nodeMap[y][x].addNode(currentNode)
-                currentNode.addNode(self.nodeMap[y][x])
+                if verbose: print("created link: ", currentNode, " => ", nodeMap[y][x])
+                nodeMap[y][x].addNode(currentNode)
+                currentNode.addNode(nodeMap[y][x])
 
-                currentNode = self.nodeMap[y][x]
+                currentNode = nodeMap[y][x]
                 if output_image: self.pathsImage[y][x] = True       
 
-
+        del nodeMap
+        gc.collect()
 
         if output_image:
             fromarray(self.pathsImage).save("PathMap.png")
+
+        
 
 
 
