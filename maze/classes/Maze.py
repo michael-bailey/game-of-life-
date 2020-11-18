@@ -7,12 +7,14 @@ import numpy as np
 from pprint import pprint
 from queue import PriorityQueue
 import gc
+from concurrent.futures.thread import ThreadPoolExecutor
+from time import time
 
 PIL.Image.MAX_IMAGE_PIXELS = 933120000
 
 class Maze(object):
     
-    def __init__(self, filename, output_image=False, verbose=False, threads=1):
+    def __init__(self, filename, output_image=False, verbose=False, threaded=True):
         self.verbose = verbose
         print("[ info ]")
         
@@ -46,23 +48,15 @@ class Maze(object):
                 nodeMap[len(self.mazeArray)-1][i] = self.endNode
                 break
 
-        # TODO: - thread this part
-        # generate nodes for each corner or juntion for the maze
-        for y in range(1, len(self.mazeArray)-1):
 
-        # define a function for a row to be processed
-        def generateNodes(y):
-            for x in range(1, len(self.mazeArray[0])-1):
-                if verbose: print("---| x:{} y:{} |---".format(x, y))
-                createNode = self.isNode(x, y)
-                if verbose: print("is node? ", createNode)
-                if createNode:
-                    nodeMap[y][x] = Node(x, y)
+        startTime = time()
+        self._genNodes(nodeMap=nodeMap, verbose=verbose) if not threaded else self._genNodesThreaded(nodeMap=nodeMap, verbose=verbose)
+        endTime = time()
+        print("time:\t", endTime - startTime)
 
         # if the output image is set then generate node image for the graph
         if output_image:
             nodeImageArray = np.full((self.width, self.height), False, dtype=bool)
-
             for y in range(len(nodeMap)):
                 for x in range(len(nodeMap[y])):
                     if nodeMap[y][x] != None:
@@ -140,7 +134,30 @@ class Maze(object):
         if output_image:
             fromarray(self.pathsImage).save("PathMap.png")
 
-        
+    def _genNodes(self, nodeMap, verbose=False):
+        for y in range(1, len(self.mazeArray)-1):
+            for x in range(1, len(self.mazeArray[0])-1):
+                if verbose: print("---| x:{} y:{} |---".format(x, y))
+                createNode = self.isNode(x, y)
+                if verbose: print("is node? ", createNode)
+                if createNode:
+                    nodeMap[y][x] = Node(x, y)
+
+    def _genNodesThreaded(self, nodeMap, verbose=False):
+        with ThreadPoolExecutor() as pool:
+
+            def processRow(y):
+                for x in range(1, len(self.mazeArray[0])-1):
+                    if verbose: print("---| x:{} y:{} |---".format(x, y))
+                    createNode = self.isNode(x, y)
+                    if verbose: print("is node? ", createNode)
+                    if createNode:
+                        nodeMap[y][x] = Node(x, y)
+
+            futures = []
+            for y in range(1, len(self.mazeArray)-1):
+                futures.append(pool.submit(processRow, y))
+        pass
 
 
 
