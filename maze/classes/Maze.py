@@ -9,8 +9,10 @@ from queue import PriorityQueue
 import gc
 from concurrent.futures.thread import ThreadPoolExecutor
 from time import time
+import faulthandler as fh
 
 PIL.Image.MAX_IMAGE_PIXELS = 933120000
+fh.enable()
 
 class Maze(object):
     
@@ -53,6 +55,7 @@ class Maze(object):
         self._genNodes(nodeMap=nodeMap, verbose=verbose) if not threaded else self._genNodesThreaded(nodeMap=nodeMap, verbose=verbose)
         endTime = time()
         print("time:\t", endTime - startTime)
+        print("nodes:\t", len(Node.nodes))
 
         # if the output image is set then generate node image for the graph
         if output_image:
@@ -67,7 +70,7 @@ class Maze(object):
         if output_image: self.pathsImage = np.full((self.width, self.height), False, dtype=bool)
 
         # scan over all rows and create left to right connections
-        if verbose: print(" ---| linking rows |---")
+        if verbose: print("[ Linking ]")
         for y in range(len(self.mazeArray)):
             currentNode = None
             for x in range(len(self.mazeArray[0])):
@@ -98,7 +101,6 @@ class Maze(object):
                     if output_image: self.pathsImage[y][x] = True
 
         # scan all columns and create all top to bottom connections
-        if verbose: print(" ---| linking columns |---")
         for x in range(len(self.mazeArray[0])):
             currentNode = None
             for y in range(len(self.mazeArray)):
@@ -128,8 +130,10 @@ class Maze(object):
                 currentNode = nodeMap[y][x]
                 if output_image: self.pathsImage[y][x] = True       
 
+        print("[ running gc ]")
         del nodeMap
-        gc.collect()
+        result = gc.collect()
+        print("result:\t", result)
 
         if output_image:
             fromarray(self.pathsImage).save("PathMap.png")
@@ -184,7 +188,7 @@ class Maze(object):
 
         return False
 
-    def solve_dikstra(self):
+    def solve_dikstra(self, recursive = True):
             if self.verbose: print(" ---| initalising |--- ")
             queue = PriorityQueue()
             doneList = []
@@ -219,7 +223,7 @@ class Maze(object):
             img = self.image.convert("RGB")
             solutionArray = img.load()
 
-            pathArray = self.endNode.pathFind()
+            pathArray = self.endNode.pathFind(recursive=recursive)
 
             for i in pathArray:
                 if i is self.startNode: print("start: ", i)

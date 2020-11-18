@@ -11,7 +11,7 @@ if __name__ == "__main__":
     #maze = Maze("./maze.png", output_image=True, threaded=True)
 
     #maze = Maze("./perfect2k.png", threaded=False)
-    maze = Maze("./perfect15k.png")
+    maze = Maze("./perfect15k.png",  threaded=False)
 
-    maze.solve_dikstra()
+    maze.solve_dikstra(recursive = False)
     print("done")
