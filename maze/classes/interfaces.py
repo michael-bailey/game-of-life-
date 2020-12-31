@@ -64,5 +64,5 @@ class ISolver(object):
     raise NotImplementedError()
 
   @abstractmethod
-  def getPath(self, node: INode):
+  def getPath(self) -> list[INode]:
     raise NotImplementedError()
