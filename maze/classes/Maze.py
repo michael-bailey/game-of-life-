@@ -1,20 +1,35 @@
-from sys import path
-from numpy.core.records import array
-from .Node import Node
-from PIL.Image import Image, open as openImage, fromarray
-import PIL
-import numpy as np
-from pprint import pprint
-from queue import PriorityQueue
+from __future__ import annotations
+
+import faulthandler as fh
 import gc
 from concurrent.futures.thread import ThreadPoolExecutor
+from pprint import pprint
+from queue import PriorityQueue
+from sys import path
 from time import time
-import faulthandler as fh
+
+import numpy as np
+import PIL
+from numpy.core.records import array
+from PIL.Image import Image, fromarray
+from PIL.Image import open as openImage
+
+from .interfaces import ISolver
+from .Node import Node
 
 PIL.Image.MAX_IMAGE_PIXELS = 933120000
 fh.enable()
 
 class Maze(object):
+
+	@staticmethod
+	def mazeFromImageFile(filename: str) -> Maze:
+		pass
+
+	@staticmethod
+	def mazeFomeImage() -> Maze:
+		pass
+
 
 	def __init__(self, filename, output_image=False, verbose=False, threaded=True):
 		self.verbose = verbose
@@ -264,3 +279,34 @@ class Maze(object):
 
 		img.save("solution.png")
 
+	def solve(self, solver: ISolver) -> list:
+		self.startNode.accept(solver)
+		solver.run()
+		pathArray: list = self.endNode.pathFind()
+
+		for i in pathArray:
+			if i is self.startNode: print("start: ", i)
+			elif i is self.endNode: print("end: ", i)
+			else: print("node: ", i)
+
+		img = self.image.convert("RGB")
+		solutionArray = img.load()
+
+		for i in range(len(pathArray)-1):
+
+			a = pathArray[i]
+			b = pathArray[i+1]
+
+			# Blue - red
+			px = (255, 0, 0)
+
+			if a.pos_y == b.pos_y:
+				# Ys equal - horizontal line
+				for x in range(min(a.pos_x,b.pos_x), max(a.pos_x,b.pos_x)):
+					solutionArray[x,a.pos_y] = px
+			elif a.pos_x == b.pos_x:
+				# Xs equal - vertical line
+				for y in range(min(a.pos_y,b.pos_y), max(a.pos_y,b.pos_y) + 1):
+					solutionArray[a.pos_x,y] = px
+
+		img.save("solution.png")
