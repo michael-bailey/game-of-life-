@@ -1,5 +1,6 @@
 from __future__ import annotations
 from abc import abstractmethod
+from queue import PriorityQueue
 from .interfaces import INode, ISolver
 
 import uuid
@@ -7,18 +8,24 @@ import uuid
 class Node(INode):
 
 	def __init__(self, pos_x, pos_y, type=1):
-		self.id = uuid.uuid4()
+		super().__init__()
 
 		self.distance = None
-		self.type = 0
+
+		self.nodes = []
 
 		self.pos_x = pos_x
 		self.pos_y = pos_y
 
 		self.previous = None
 
-		self.nodes = []
-		Node.nodes.append(self)
+	def linkNode(self, node: Node):
+		if node not in self.nodes:
+			self.nodes.append(node)
+			node.linkNode(self)
+
+	def getNodes(self) -> list[Node]:
+		return self.nodes
 
 	def pathFind(self, recursive = True):       
 		nodebacktrack = []
@@ -36,56 +43,65 @@ class Node(INode):
 	def __gt__(self, other):
 		return self.distance > other.distance
 
-def backtrack(node):
-	current = node
-	while current.previous != None:
-		yield current
-		current = current.previous
-	yield current
+def backtrack(node: Node):
+	print("first: ", node)
+	while node.previous != None:
+		print("current: ", node)
+		yield node
+		if not isinstance(node.previous, Node):
+			print("next id: ", node.previous)
+			node = Node.findbyId(node.previous)
+		else:
+			print("next node: ", node.previous)
+			node = node.previous
+	yield node
 
 class DijkstraSolver(ISolver):
 
-  def __init__(self) -> None:
-      super().__init__()
-      print("[ DijkstraSolver ]")
-      print("method: init")
-      
-      self.queue = PriorityQueue()
+	def __init__(self, verbose = False) -> None:
+			super().__init__()
+			print("[ DijkstraSolver ]")
+			print("method: init")
 
-      self.start: Node = None
-      self.end: Node = None
+			self.verbose = verbose
+			
+			self.queue = PriorityQueue()
 
-  def resolve(self, node: Node):
+			self.start: Node = None
+			self.end: Node = None
 
-    if node.distance == None: node.distance = 0
+	def resolve(self, node: Node):
 
-    for child in node.nodes:
-      child: Node = Node.findbyId(child)
+		if node.distance == None: node.distance = 0
 
-      diff = abs(child.pos_x - node.pos_x) if abs(child.pos_x - node.pos_x) > 0 else abs(child.pos_y - node.pos_y)
-      if self.verbose: print("diff: ", diff)
+		for child in node.nodes:
+			if not isinstance(child, INode):
+				child: Node = Node.findbyId(child)
 
-      if child.distance == None or child.distance > node.distance + diff:
-        child.distance = node.distance + diff
-        child.previous = node.id
-        self.queue.put(child)
+			diff = abs(child.pos_x - node.pos_x) if abs(child.pos_x - node.pos_x) > 0 else abs(child.pos_y - node.pos_y)
+			if self.verbose: print("diff: ", diff)
 
-  def step(self):
-    if not self.queue.empty():
-      node: Node = self.queue.get()
-      node.accept(self)
+			if child.distance == None or child.distance > node.distance + diff:
+				child.distance = node.distance + diff
+				child.previous = node.id
+				self.queue.put(child)
 
-  def run(self):
-    while not self.queue.empty():
-      node: Node = self.queue.get()
-      node.accept(self)
-      
-  def getPath(self) -> list[Node]:
-    if self.start != None or self.end != None:
-      path: list[Node] = []
-      current = self.end
-      while current.previous != None:
-        path.append(current)
-        current = Node.findbyId(current.previous)
-      path.append(current)
-      return path
+	def step(self):
+		if not self.queue.empty():
+			node: Node = self.queue.get()
+			node.accept(self)
+
+	def run(self):
+		while not self.queue.empty():
+			node: Node = self.queue.get()
+			node.accept(self)
+			
+	def getPath(self) -> list[Node]:
+		if self.start != None or self.end != None:
+			path: list[Node] = []
+			current = self.end
+			while current.previous != None:
+				path.append(current)
+				current = Node.findbyId(current.previous)
+			path.append(current)
+			return path
