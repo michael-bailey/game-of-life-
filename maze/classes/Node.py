@@ -96,12 +96,15 @@ class DijkstraSolver(ISolver):
 			node: Node = self.queue.get()
 			node.accept(self)
 			
+	def setStart(self, node: Node) -> DijkstraSolver:
+		self.start = node
+		return self
+
+	def setEnd(self, node: Node) -> DijkstraSolver:
+		self.end = node
+		return self
+	
 	def getPath(self) -> list[Node]:
-		if self.start != None or self.end != None:
-			path: list[Node] = []
-			current = self.end
-			while current.previous != None:
-				path.append(current)
-				current = Node.findbyId(current.previous)
-			path.append(current)
-			return path
+		if self.end != None:
+			return self.end.pathFind()
+		return None
