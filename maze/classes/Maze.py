@@ -279,15 +279,10 @@ class Maze(object):
 
 		img.save("solution.png")
 
-	def solve(self, solver: ISolver) -> list:
+	def solve(self, solver: ISolver) -> ISolver:
 		self.startNode.accept(solver)
 		solver.run()
 		pathArray: list = self.endNode.pathFind()
-
-		for i in pathArray:
-			if i is self.startNode: print("start: ", i)
-			elif i is self.endNode: print("end: ", i)
-			else: print("node: ", i)
 
 		img = self.image.convert("RGB")
 		solutionArray = img.load()
@@ -310,3 +305,4 @@ class Maze(object):
 					solutionArray[a.pos_x,y] = px
 
 		img.save("solution.png")
+		return solver
