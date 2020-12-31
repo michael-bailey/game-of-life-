@@ -20,7 +20,6 @@ class Maze(object):
 		self.verbose = verbose
 		print("[ info ]")
 
-
 		# open the image file
 		self.image = openImage(filename)
 		self.width = self.image.width
@@ -70,10 +69,49 @@ class Maze(object):
 		if output_image: self.pathsImage = np.full((self.width, self.height), False, dtype=bool)
 
 		# scan over all rows and create left to right connections
-		if verbose: print("[ Linking ]")
+		if verbose: print("[ Linking rows]")
 		for y in range(len(self.mazeArray)):
 			currentNode = None
 			for x in range(len(self.mazeArray[0])):
+
+				if verbose: print("[ tile x: {}, y: {} ]".format(x, y))
+
+				# if on wall clear the current node
+				if verbose: print("is path: ", self.mazeArray[y][x])
+				if not self.mazeArray[y][x]:
+					currentNode = None
+					continue
+
+				# if none skip this tile
+				if verbose: print("has node: ", nodeMap[y][x])
+				if nodeMap[y][x] == None:
+					if output_image: self.pathsImage[y][x] = True
+					continue
+
+				# if it is a node set current node
+				if verbose: print("current node: ", currentNode)
+				if currentNode == None:
+					currentNode = nodeMap[y][x]
+					if output_image: self.pathsImage[y][x] = True
+					continue
+
+				# if there is a current node link it
+				if verbose: print("created link: ", currentNode, " => ", nodeMap[y][x])
+				if currentNode != None:
+					currentNode.linkNode(nodeMap[y][x])
+					#nodeMap[y][x].addNode(currentNode)
+					currentNode = nodeMap[y][x]
+					if output_image: self.pathsImage[y][x] = True
+
+
+
+		# scan all columns and create all top to bottom connections
+		if verbose: print("[ Linking columns]")
+		for x in range(len(self.mazeArray[0])):
+			currentNode = None
+			for y in range(len(self.mazeArray)):
+
+				if verbose: print("[ tile x: {}, y: {} ]".format(x, y))
 
 				# if on wall clear the current node
 				if verbose: print("path: ", self.mazeArray[y][x])
@@ -87,6 +125,7 @@ class Maze(object):
 					if output_image: self.pathsImage[y][x] = True
 					continue
 
+				# if current node is none set current node
 				if verbose: print("current node: ", currentNode)
 				if currentNode == None:
 					currentNode = nodeMap[y][x]
@@ -95,35 +134,12 @@ class Maze(object):
 
 				if verbose: print("created link: ", currentNode, " => ", nodeMap[y][x])
 				if currentNode != None:
-					currentNode.addNode(nodeMap[y][x])
-					nodeMap[y][x].addNode(currentNode)
+					currentNode.linkNode(nodeMap[y][x])
+					#nodeMap[y][x].addNode(currentNode)
 					currentNode = nodeMap[y][x]
 					if output_image: self.pathsImage[y][x] = True
 
-		# scan all columns and create all top to bottom connections
-		for x in range(len(self.mazeArray[0])):
-			currentNode = None
-			for y in range(len(self.mazeArray)):
 
-				# if on wall clear the current node
-				if verbose: print("path: ", self.mazeArray[y][x])
-				if not self.mazeArray[y][x]:
-					currentNode = None
-					continue
-
-				# if none skip this node
-				if verbose: print("node: ", nodeMap[y][x])
-				if nodeMap[y][x] == None:
-					if output_image: self.pathsImage[y][x] = True
-					continue
-
-				if verbose: print("current node: ", currentNode)
-				if currentNode == None:
-					currentNode = nodeMap[y][x]
-					if output_image: self.pathsImage[y][x] = True
-					continue
-
-				if verbose: print("created link: ", currentNode, " => ", nodeMap[y][x])
 				nodeMap[y][x].addNode(currentNode)
 				currentNode.addNode(nodeMap[y][x])
 
@@ -205,13 +221,13 @@ class Maze(object):
 
 			# for each node update distance
 			for node in current.nodes:
-							diff = abs(current.pos_x - node.pos_x) if abs(current.pos_x - node.pos_x) > 0 else abs(current.pos_y - node.pos_y)
+				diff = abs(current.pos_x - node.pos_x) if abs(current.pos_x - node.pos_x) > 0 else abs(current.pos_y - node.pos_y)
 
-							if self.verbose: print("diff: ", diff)
-							if node.distance == None or node.distance > current.distance + diff:
-											node.distance = current.distance + diff
-											node.previous = current
-											queue.put(node)
+				if self.verbose: print("diff: ", diff)
+				if node.distance == None or node.distance > current.distance + diff:
+					node.distance = current.distance + diff
+					node.previous = current
+					queue.put(node)
 
 			doneList.append(current)
 
