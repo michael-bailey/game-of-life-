@@ -14,8 +14,8 @@ def Menu():
         return x
     except ValueError as e:
         print("the input wasnt an intager or a valid option please try again")
-        print()
         return Menu()
+
 
 def computer(counter_num, player):
     counters = counter_num
@@ -23,14 +23,13 @@ def computer(counter_num, player):
         turn = "computer"
     else:
         turn = "player"
-    pastCount = 0
 
     while counters > 0:
         print("------")
-        print("number of counters remaining",counters)
+        print("number of counters remaining", counters)
         print("------")
+        count = 0
         if turn == "player":
-            count = 0
             while not (count < 4 and count > 0):
                 count = int(input("enter a number to take : "))
 
@@ -39,20 +38,20 @@ def computer(counter_num, player):
 
         elif turn == "computer":
             if counters % 4 == 0:
-                print("computer takes",(4 - count))
+                print("computer takes", (4 - count))
                 counters = counters - (4 - count)
                 turn = "player"
             else:
-                print("computer takes",((counters % 4)))
-                counters = counters - (counters % 4) 
+                print("computer takes", ((counters % 4)))
+                counters = counters - (counters % 4)
                 turn = "player"
-                
-    
+
     if turn == "player":
         print("computer wins")
         print()
     if turn == "computer":
-            print("my algorithm is wrong")
+        print("my algorithm is wrong")
+
 
 def players(counter_num):
     counters = counter_num
@@ -60,7 +59,7 @@ def players(counter_num):
 
     while counters > 0:
         print("------")
-        print("number of counters remaining",counters)
+        print("number of counters remaining", counters)
         print("------")
         if turn == "player1":
             count = 0
@@ -77,7 +76,7 @@ def players(counter_num):
 
             counters = counters - count
             turn = "player2"
-    
+
     if turn == "player1":
         print("player2 wins wins")
         print()
@@ -85,10 +84,11 @@ def players(counter_num):
         print("player1 wins")
         print()
 
+
 def helpBook():
-    for i in (open("nim-help.txt","r").readlines()):
+    for i in (open("nim-help.txt", "r").readlines()):
         print(i)
-            
+
 
 option = 0
 try:
@@ -96,7 +96,8 @@ try:
     while option != 4:
         option = Menu()
         if option == 1:
-            computer(int(input("enter number of counters : ")),input("who starts C or P : "))
+            computer(int(input("enter number of counters : ")),
+                     input("who starts C or P : "))
         if option == 2:
             players(int(input("enter number of counters : ")))
         if option == 3:
@@ -106,4 +107,4 @@ except Exception as e:
     print("##################")
     print("# ending program #")
     print("##################")
-    print(e.value)
+    print(e)
