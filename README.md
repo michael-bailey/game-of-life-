@@ -1,10 +1,10 @@
-# python example projects
+# Python example projects.
 
-This repository is a set of programs i have worked on in my spare time to practice certain elements of programming or algorithms
+This repository is a set of programs i have worked on in my spare time to learn and practice certain algorithmsn or programming styles using python
 
-It currently includes
-
-* Three Game of life examples with diffrent rule sets
-* In implementation of game of nim
-* Image filtering using a python image library
-
+## Projects.
+* Game of life example with three diffrent rule sets.
+* In implementation of the game of nim.
+* Image filtering using the PIL image library.
+* Different sorting algorithms and their timings.
+* A basic string compression algorithm that assigns words to numbers.
