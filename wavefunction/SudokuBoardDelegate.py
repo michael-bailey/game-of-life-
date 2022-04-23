@@ -1,7 +1,9 @@
+'''
+	SudokuBoardDelegate.py
+'''
 
 from abc import abstractmethod
 import SudokuBoard
-
 
 class SudokuBoardDelegate(object):
 
