@@ -54,6 +54,19 @@ class SudokuWaveFuncitonBoard(SudokuBoardDelegate.SudokuBoardDelegate):
 	def collapse(self, row: int, col: int, number: str):
 		self.__array[row][col].collapse(number)
 
+	def get_lowest_entropys(self) -> List['SudokuCellSuperposition.SudokuCellSuperposition']:
+		lowest_list = []
+		lowest_value = 10
+
+		for row in self.__array:
+			for element in row:
+				ent = element.get_entropy()
+				if ent < lowest_value:
+					lowest_list = [element]
+				if ent == lowest_value:
+					lowest_list.append(element)
+		return lowest_list
+
 
 def chunk(arr: List[List[Any]]) -> List[List[Any]]:
 	chunks = [[row[i:i + 3] for i in range(0, len(row), 3)] for row in arr]

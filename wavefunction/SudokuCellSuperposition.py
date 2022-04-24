@@ -33,11 +33,13 @@ class SudokuCellSuperposition(object):
 		for item in self.col: item.remove_possibility(number)
 		for item in self.square: item.remove_possibility(number)
 
-	
 	def remove_possibility(self, number: str):
 		s = set([number])
 		diff = self.__posibilities.symmetric_difference(s)
 		self.__posibilities = diff
+	
+	def get_entropy(self) -> int:
+		return len(self.__posibilities)
 	
 	def is_collapsed(self) -> bool:
 		return self.__value != None

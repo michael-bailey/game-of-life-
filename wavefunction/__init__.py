@@ -18,5 +18,8 @@ def main():
 	print(board.get_col(2))
 	print(board.get_square(1,2))
 
+	lowest = superBoard.get_lowest_entropys()
+	print()
+
 if __name__ == "__main__":
 	main()
