@@ -4,7 +4,7 @@
 
 from abc import abstractmethod
 import SudokuBoard
-from typing import List, Set
+from typing import List, Set, Tuple
 
 from SudokuCellSuperposition import SudokuCellSuperposition
 
@@ -26,5 +26,5 @@ class SudokuBoardDelegate(object):
 	def get_entropy(self, row: int, col: int) -> int:
 		raise NotImplementedError()
 
-	def get_lowest_entropys(self) -> List[SudokuCellSuperposition]:
+	def get_lowest_entropys(self) -> List[Tuple[SudokuCellSuperposition, int, int]]:
 		raise NotImplementedError()

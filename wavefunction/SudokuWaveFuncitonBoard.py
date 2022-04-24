@@ -2,7 +2,7 @@
 	SudokuWaveFuncitonBoard.py
 '''
 
-from typing import Any, List
+from typing import Any, List, Tuple
 import SudokuBoard
 import SudokuBoardDelegate
 import SudokuCellSuperposition
@@ -19,7 +19,7 @@ class SudokuWaveFuncitonBoard(SudokuBoardDelegate.SudokuBoardDelegate):
 	def __init__(self) -> None:
 		super().__init__()
 		# create array for holding all values
-		self.__array = [[SudokuCellSuperposition.SudokuCellSuperposition() for _ in range(0,10)] for _ in range(0,10)]
+		self.__array = [[SudokuCellSuperposition.SudokuCellSuperposition() for _ in range(1,10)] for _ in range(1,10)]
 
 		# create arrays for each
 		self.__rows = [x for x in self.__array]
@@ -35,11 +35,18 @@ class SudokuWaveFuncitonBoard(SudokuBoardDelegate.SudokuBoardDelegate):
 
 		for squ in self.__squares:
 			for element in squ:
-				element.__square = squ
+				element.square = squ
 
 
 	def cell_update(self, board: 'SudokuBoard.SudokuBoard', row: int, col: int):
-		print("[SudokuWaveFuncitonBoard:cell_update] row:{} col:{}", row,col)
+		print("[SudokuWaveFuncitonBoard:cell_update] row:{} col:{}".format( row,col))
+		number = board.array[row][col]
+		self.collapse(row, col, number)
+		
+		for (r_index, t_row) in enumerate(self.__array):
+			for (c_index, el) in enumerate(t_row):
+				if el.value == None: continue
+				board.array[r_index][c_index] = el.value
 
 	def init_update(self, board: 'SudokuBoard.SudokuBoard'):
 		print("[SudokuWaveFuncitonBoard:init_update]")
@@ -54,17 +61,19 @@ class SudokuWaveFuncitonBoard(SudokuBoardDelegate.SudokuBoardDelegate):
 	def collapse(self, row: int, col: int, number: str):
 		self.__array[row][col].collapse(number)
 
-	def get_lowest_entropys(self) -> List['SudokuCellSuperposition.SudokuCellSuperposition']:
-		lowest_list = []
+	def get_lowest_entropys(self) -> List[Tuple['SudokuCellSuperposition.SudokuCellSuperposition', int, int]]:
+		lowest_list: List[Tuple['SudokuCellSuperposition.SudokuCellSuperposition', int, int]] = []
 		lowest_value = 10
 
-		for row in self.__array:
-			for element in row:
+		for (r_index, row) in enumerate(self.__array):
+			for (c_index, element) in enumerate(row):
+				if element.is_collapsed(): continue
 				ent = element.get_entropy()
 				if ent < lowest_value:
-					lowest_list = [element]
-				if ent == lowest_value:
-					lowest_list.append(element)
+					lowest_list = [(element, r_index, c_index)]
+					lowest_value = ent
+				elif ent == lowest_value:
+					lowest_list.append((element, r_index, c_index))
 		return lowest_list
 
 

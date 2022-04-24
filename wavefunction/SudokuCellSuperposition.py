@@ -10,36 +10,42 @@ class SudokuCellSuperposition(object):
 		SudokuCellSuperposition
 	'''
 
-	__posibilities: Set[str]
-	__value: Optional[str]
+	posibilities: Set[str]
+	value: Optional[str]
 
 	row: List['SudokuCellSuperposition']
 	col: List['SudokuCellSuperposition']
 	square: List['SudokuCellSuperposition']
 
 	def __init__(self) -> None:
-		self.__posibilities = set([str(x) for x in range(0,10)])
-		self.__value = None
+		self.posibilities = set([str(x) for x in range(1,10)])
+		self.value = None
 
 		self.row = []
 		self.col = []
 		self.square = []
 
 	def collapse(self, number: str):
-		self.__posibilities = set()
-		self.__value = number
+		self.posibilities = set()
+		self.value = number
 
-		for item in self.row: item.remove_possibility(number)
-		for item in self.col: item.remove_possibility(number)
-		for item in self.square: item.remove_possibility(number)
+		for item in self.row:
+			item.remove_possibility(number)
+
+		for item in self.col:
+			item.remove_possibility(number)
+
+		for item in self.square:
+			item.remove_possibility(number)
 
 	def remove_possibility(self, number: str):
-		s = set([number])
-		diff = self.__posibilities.symmetric_difference(s)
-		self.__posibilities = diff
-	
+		self.posibilities.discard(number)
+		if len(self.posibilities) == 1:
+			self.collapse(list(self.posibilities)[0])
+			
+
 	def get_entropy(self) -> int:
-		return len(self.__posibilities)
+		return len(self.posibilities)
 	
 	def is_collapsed(self) -> bool:
-		return self.__value != None
+		return self.value != None

@@ -20,7 +20,7 @@ class SudokuBoard(object):
 	__delegate: Optional['SudokuBoardDelegate.SudokuBoardDelegate']
 	
 	def __init__(self) -> None:
-		self.array = [['_' for _ in range(0,10)] for _ in range(0,10)]
+		self.array = [['_' for _ in range(1,10)] for _ in range(1,10)]
 
 	def __str__(self) -> str:
 		return '\n'.join([' '.join([str(cell) for cell in row]) for row in self.array])
@@ -46,6 +46,7 @@ class SudokuBoard(object):
 	
 	def set_number(self, row: int, col: int, number: str):
 		self.array[row][col] = number
+		if self.__delegate != None: self.__delegate.cell_update(self, row, col)
 
 	@staticmethod
 	def load(filename: str) -> SudokuBoard:
