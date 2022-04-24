@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import List
+from typing import List, Optional, Set
 from csv import reader
 
 import SudokuBoardDelegate
@@ -17,8 +17,8 @@ class SudokuBoard(object):
 	'''
 
 	__array: List[List[str]]
+	__delegate: Optional['SudokuBoardDelegate.SudokuBoardDelegate']
 	
-
 	def __init__(self) -> None:
 		self.__array = [['_' for _ in range(0,10)] for _ in range(0,10)]
 
@@ -27,6 +27,7 @@ class SudokuBoard(object):
 
 	def set_delegate(self, delegate: 'SudokuBoardDelegate.SudokuBoardDelegate'):
 		self.__delegate = delegate
+		self.__delegate.init_update(self)
 
 	def get_row(self, index: int) -> List[str]:
 		return self.__array[index]
@@ -38,6 +39,13 @@ class SudokuBoard(object):
 		col_index = 0 + (3*col)
 		row_index = 0 + (3*row)
 		return [self.__array[i][row_index:row_index+3] for i in range(col_index, col_index+3)]
+
+	def get_posibilities(self, row: int, col: int) -> Optional[Set[str]]:
+		if self.__delegate == None: return None
+		return self.__delegate.get_posibilities(row,col)
+	
+	def set_number(self, row: int, col: int, number: str):
+		self.__array[row][col] = number
 
 	@staticmethod
 	def load(filename: str) -> SudokuBoard:

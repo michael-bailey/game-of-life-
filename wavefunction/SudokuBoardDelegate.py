@@ -4,6 +4,7 @@
 
 from abc import abstractmethod
 import SudokuBoard
+from typing import Set
 
 class SudokuBoardDelegate(object):
 
@@ -12,5 +13,13 @@ class SudokuBoardDelegate(object):
 		raise NotImplementedError()
 
 	@abstractmethod
-	def init_update(self, board: 'SudokuBoard.SudokuBoard', row: int, col: int):
+	def init_update(self, board: 'SudokuBoard.SudokuBoard'):
+		raise NotImplementedError()
+
+	@abstractmethod
+	def get_posibilities(self, row: int, col: int) -> Set:
+		raise NotImplementedError()
+
+	@abstractmethod
+	def get_entropy(self, row: int, col: int) -> int:
 		raise NotImplementedError()
