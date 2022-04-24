@@ -36,7 +36,7 @@ class SudokuWaveFuncitonBoard(SudokuBoardDelegate.SudokuBoardDelegate):
 				match col:
 					case "_":
 						continue
-					case r"[0-9]":
+					case "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9":
 						self.collapse(r_index,c_index, col)
 						
 	def collapse(self, row: int, col: int, number: str):
