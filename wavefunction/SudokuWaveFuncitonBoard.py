@@ -25,6 +25,18 @@ class SudokuWaveFuncitonBoard(SudokuBoardDelegate.SudokuBoardDelegate):
 		self.__rows = [x for x in self.__array]
 		self.__cols = [[i[row] for i in self.__array] for row in range(0, 9)]
 		self.__squares = chunk(self.__array)
+		for row in self.__rows:
+			for element in row:
+				element.row = row
+		
+		for col in self.__cols:
+			for element in col:
+				element.col = col
+
+		for squ in self.__squares:
+			for element in squ:
+				element.__square = squ
+
 
 	def cell_update(self, board: 'SudokuBoard.SudokuBoard', row: int, col: int):
 		print("[SudokuWaveFuncitonBoard:cell_update] row:{} col:{}", row,col)
